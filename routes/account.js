@@ -52,6 +52,7 @@ router.post("/transfer", userMiddleware, async (req, res) => {
   }
 
   const toAccount = await Account.findOne({ userId: to }).session(session);
+  console.log(toAccount);
 
   if (!toAccount) {
     await session.abortTransaction();
