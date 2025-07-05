@@ -162,4 +162,16 @@ router.get("/bulk", async (req, res) => {
   });
 });
 
+// to get my Basic information
+router.get("/me", userMiddleware, async (req, res) => {
+  const userId = req.userId;
+  const user = await User.findById(userId);
+  res.json({
+    id: userId,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    username: user.username,
+  });
+});
+
 module.exports = router;
