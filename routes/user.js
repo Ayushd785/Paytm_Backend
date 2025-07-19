@@ -4,7 +4,6 @@ const router = express.Router();
 const zod = require("zod");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const JWT_SECRET_KEY = require("../../config");
 const userMiddleware = require("../middleware/userMiddleware");
 const Account = require("../db/account");
 const mongoose = require("mongoose");
@@ -58,9 +57,13 @@ router.post("/signup", async (req, res) => {
       balance: 1 + Math.random() * 10000,
     });
 
-    const token = jwt.sign({ userId: newUser._id }, JWT_SECRET_KEY, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { userId: newUser._id },
+      process.env.JWT_SECRET_KEY,
+      {
+        expiresIn: "1h",
+      }
+    );
 
     res.status(201).json({
       msg: "User created successfully",
@@ -94,7 +97,7 @@ router.post("/signin", async (req, res) => {
       });
     }
 
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET_KEY, {
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
       expiresIn: "1h",
     });
 

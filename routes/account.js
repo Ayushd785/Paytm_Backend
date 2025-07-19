@@ -60,7 +60,6 @@ router.post("/transfer", userMiddleware, async (req, res) => {
       msg: "Invalid account",
     });
   }
-   
 
   // perfrom the transfer
   await Account.updateOne(
