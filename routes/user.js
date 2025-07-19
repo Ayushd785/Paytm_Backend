@@ -137,32 +137,43 @@ router.put("/", userMiddleware, async (req, res) => {
 
 // search the user based on his firstname or lastname initials
 
-router.get("/bulk", async (req, res) => {
-  const filter = req.query.filter || "";
+router.get("/bulk", userMiddleware, async (req, res) => {
+  try {
+    const filter = req.query.filter || "";
 
-  const users = await User.find({
-    $or: [
-      {
-        firstname: {
-          $regex: filter,
+    const users = await User.find({
+      $or: [
+        {
+          firstname: {
+            $regex: filter,
+            $options: "i", // case insensitive
+          },
         },
-      },
-      {
-        lastname: {
-          $regex: filter,
+        {
+          lastname: {
+            $regex: filter,
+            $options: "i", // case insensitive
+          },
         },
-      },
-    ],
-  });
+      ],
+    });
 
-  res.json({
-    user: users.map((user) => ({
-      username: user.username,
-      firstname: user.firstname,
-      lastname: user.lastname,
-      _id: user._id,
-    })),
-  });
+    res.json({
+      msg: "Users fetched successfully",
+      users: users.map((user) => ({
+        username: user.username,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        _id: user._id,
+      })),
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      msg: "Internal server error",
+      error: err.message,
+    });
+  }
 });
 
 // to get my Basic information
